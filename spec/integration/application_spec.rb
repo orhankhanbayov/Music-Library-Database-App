@@ -30,7 +30,7 @@ describe Application do
     end
 
     it "returns list of all albums with 200 OK" do
-      response = get("/albums/")
+      response = get("/albums")
       expect(response.status).to eq(200)
       expect(response.body).to include("<h1>Albums</h1>")
       expect(response.body).to include("Title: Doolittle")
@@ -46,7 +46,7 @@ describe Application do
     end
 
     it "returns list of all artists with 200 OK" do
-      response = get("/artists/")
+      response = get("/artists")
       expect(response.status).to eq(200)
       expect(response.body).to include("<h1>Artists</h1>")
       expect(response.body).to include("Name: Pixies")
@@ -54,19 +54,29 @@ describe Application do
     end
   end
 
-  context "POST /" do
-    it "creates album entry and returns 200 OK" do
-      response = post("/albums/?title=Voyage&release_year=2022&artist_id=2")
-      expect(response.status).to eq(200)
-      expect(response.body).to eq ""
+  context "GET artists/new" do
+    it "returns form and status 200" do
+      response = get("artists/new")
+      expect(response.body).to include('<input type="text" name="name">')
     end
 
-    it "creates artist entry and returns 200 OK" do
-      response = post("/artists/?name=Wild nothing&genre=Indie")
+    it "returns a sucess page and 200 OK" do
+      response = post("artists?name=Wild nothing&genre=Indie")
+
       expect(response.status).to eq(200)
-      expect(response.body).to eq ""
-      response = get("/artists/")
-      expect(response.body).to include("Name: Wild nothing")
+      expect(response.body).to include("<h1> Your artist was created! </h1>")
+    end
+  end
+
+  context "GET /albums/new" do
+    it "returns form and status 200" do
+      response = get("/albums/new")
+      expect(response.body).to include('<input type="text" name="title">')
+    end
+
+    it "returns a sucess page and 200" do
+      response = post("albums?title=best of 20&release_year=2020&artist_id=3")
+      expect(response.body).to include("<h1> Your album was created! </h1>")
     end
   end
 
