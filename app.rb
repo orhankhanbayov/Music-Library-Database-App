@@ -1,4 +1,5 @@
 require "sinatra"
+require "sinatra/base"
 require "sinatra/reloader"
 require_relative "lib/database_connection"
 require_relative "lib/album_repository"
@@ -20,10 +21,17 @@ class Application < Sinatra::Base
   get "/albums/:id" do
     album_id = params[:id]
     albums = AlbumRepository.new
-    x = albums.find(album_id)
+    @x = albums.find(album_id)
     artists = ArtistRepository.new
-    c = artists.find(x.artist_id.to_i)
-    return "#{x.title} - #{x.release_year} - #{c.name}"
+    @c = artists.find(@x.artist_id)
+    return erb(:index)
+  end
+
+  get "/albums/" do
+    albums = AlbumRepository.new
+    @album = albums.all
+
+    return erb(:index1)
   end
 
   get "/artists/" do
